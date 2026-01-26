@@ -1,63 +1,22 @@
-import { useFormStore } from "./store/useFormStore";
-import Step1Profile from "./components/steps/Step1Profile";
-import Step2Business from "./components/steps/Step2Business";
-import Step3Credit from "./components/steps/Step3Credit";
-import Step4Loan from "./components/steps/Step4Loan";
-import Step5Strength from "./components/steps/Step5Strength";
-import Step6Lead from "./components/steps/Step6Lead";
-import Result from "./components/steps/Result";
-import ProgressBar from "./components/ProgressBar";
-import FormHeader from "./components/common/FormHeader";
+import FormContainer from "./components/FormContainer";
 
-function App() {
-  const { step } = useFormStore();
-
-  const renderStep = () => {
-    switch (step) {
-      case 1: return <Step1Profile />;
-      case 2: return <Step2Business />;
-      case 3: return <Step3Credit />;
-      case 4: return <Step4Loan />;
-      case 5: return <Step5Strength />;
-      case 6: return <Step6Lead />;
-      case 7: return <Result />;
-      default: return null;
-    }
-  };
-
+export default function App() {
   return (
-    <div className="min-h-screen bg-gray-200 flex items-center justify-center">
-      <div
-  className="
-    bg-white shadow-lg rounded-2xl
-    w-full
-    max-w-full lg:max-w-[70%]
-
-    /* padding */
-    px-4 py-6
-    sm:px-6 sm:py-8
-    lg:px-10 lg:py-10
-
-    /* spacing from screen */
-    mx-3 sm:mx-6 lg:mx-auto
-
-    /* height control */
-    min-h-auto lg:min-h-[75vh]
-
-    flex flex-col
-  "
->
-
-        <FormHeader />
-        <ProgressBar />
-  
-        <div >
-          {renderStep()}
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
+      <div className="w-full max-w-3xl bg-white shadow-md rounded-lg p-6 md:p-8">
+        {/* App Header */}
+        <div className="text-center mb-6">
+          <h1 className="text-2xl md:text-3xl font-bold text-blue-700">
+            BI Rating Calculator
+          </h1>
+          <p className="text-sm text-gray-600 mt-1">
+            Check your borrower intelligence score
+          </p>
         </div>
+
+        {/* Main Multi-Step Form */}
+        <FormContainer />
       </div>
     </div>
   );
-  
 }
-
-export default App;

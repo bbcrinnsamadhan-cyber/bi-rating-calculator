@@ -1,22 +1,23 @@
 import { z } from "zod";
 
 export const step4Schema = z.object({
-  runningLoans: z
-    .number()
-    .min(0, "negative valued not allowed"),
+  totalAssets: z
+    .number({
+      required_error: "Total assets is required",
+      invalid_type_error: "Enter a valid number",
+    })
+    .min(1, "Value must be greater than zero"),
 
-  closedLoans: z
-    .number()
-    .int("Decimal not allowed")
-    .min(0, "Negative value not allowed"),
+  totalOutstandingLoans: z
+    .number({
+      required_error: "Total outstanding loans is required",
+      invalid_type_error: "Enter a valid number",
+    })
+    .min(1, "Value must be greater than zero"),
 
-  bounces12: z
-    .number()
-    .int("Decimal not allowed")
-    .min(0, "Negative value not allowed"),
-
-  bounces6: z
-    .number()
-    .int("Decimal not allowed")
-    .min(0, "Negative value not allowed"),
+  declaration: z.literal(true, {
+    errorMap: () => ({
+      message: "Please confirm the declaration",
+    }),
+  }),
 });

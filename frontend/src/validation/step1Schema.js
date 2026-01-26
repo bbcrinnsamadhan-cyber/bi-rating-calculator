@@ -1,18 +1,27 @@
 import { z } from "zod";
 
 export const step1Schema = z.object({
-  age: z
-    .number({
-      invalid_type_error: "Age must be a number",
-    })
-    .int("Decimal values are not allowed")
-    .min(18, "Age must be at least 18 years")
-    .max(70, "Age cannot be more than 70 years"),
+  fullName: z
+    .string()
+    .min(2, "Name must be at least 2 characters"),
 
-  experience: z
-    .number({
-      invalid_type_error: "Experience must be a number",
-    })
-    .int("Decimal values are not allowed")
-    .min(0, "Experience cannot be negative"),
+  age: z
+    .number()
+    .min(18, "Minimum age is 18")
+    .max(75, "Maximum age is 75"),
+
+  mobile: z
+    .string()
+    .regex(/^[0-9]{10}$/, "Mobile number must be 10 digits"),
+
+  email: z
+    .string()
+    .email("Enter a valid email address"),
+
+  applicantType: z.enum(
+    ["Salaried", "SEP", "SENP", "Others"],
+    {
+      required_error: "Please select applicant type",
+    }
+  ),
 });

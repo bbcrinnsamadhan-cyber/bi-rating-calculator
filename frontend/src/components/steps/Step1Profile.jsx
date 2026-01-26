@@ -9,49 +9,61 @@ export default function Step1Profile() {
   const {
     register,
     handleSubmit,
-    trigger,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(step1Schema),
-    mode: "onBlur", // ✅ document requirement
+    mode: "onBlur",
     defaultValues: {
-      age: formData.age ?? "",
-      experience: formData.experience ?? "",
+      fullName: formData.fullName,
+      age: formData.age,
+      mobile: formData.mobile,
+      email: formData.email,
+      applicantType: formData.applicantType,
     },
   });
 
   const onSubmit = (data) => {
-    saveData(data);
-    nextStep();
+    saveData(data); // zustand store me save
+    nextStep();     // next step pe move
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <h2 className="text-xl font-semibold mb-4">
-        Applicant Basic Profile
+        Profile
       </h2>
+
+      {/* Full Name */}
+      <div className="mb-4">
+        <label className="block mb-1 font-medium">
+          Applicant Name
+        </label>
+        <input
+          type="text"
+          {...register("fullName")}
+          className="w-full border p-2 rounded"
+          placeholder="Enter full name"
+        />
+        {errors.fullName && (
+          <p className="text-red-500 text-sm">
+            {errors.fullName.message}
+          </p>
+        )}
+      </div>
 
       {/* Age */}
       <div className="mb-4">
-        <label className="block mb-1">
-          Age of Main Applicant
+        <label className="block mb-1 font-medium">
+          Age
         </label>
-
         <input
           type="number"
           min="18"
-          max="70"
-          step="1"
-          placeholder="Enter age in years"
+          max="75"
           {...register("age", { valueAsNumber: true })}
-          onBlur={() => trigger("age")} // ✅ explicit blur validation
           className="w-full border p-2 rounded"
+          placeholder="18 - 75"
         />
-
-        <p className="text-xs text-gray-500 mt-1">
-          Age of primary loan applicant
-        </p>
-
         {errors.age && (
           <p className="text-red-500 text-sm">
             {errors.age.message}
@@ -59,41 +71,75 @@ export default function Step1Profile() {
         )}
       </div>
 
-      {/* Experience */}
+      {/* Mobile */}
       <div className="mb-4">
-        <label className="block mb-1">
-          Experience in Business (Years)
+        <label className="block mb-1 font-medium">
+          Mobile Number
         </label>
-
         <input
-          type="number"
-          min="0"
-          step="1"
-          placeholder="e.g. 8"
-          {...register("experience", {
-            valueAsNumber: true,
-          })}
-          onBlur={() => trigger("experience")}
+          type="text"
+          maxLength={10}
+          inputMode="numeric"
+          {...register("mobile")}
           className="w-full border p-2 rounded"
+          placeholder="10 digit mobile number"
         />
-
-        <p className="text-xs text-gray-500 mt-1">
-          Total years of experience in current or related business
-        </p>
-
-        {errors.experience && (
+        {errors.mobile && (
           <p className="text-red-500 text-sm">
-            {errors.experience.message}
+            {errors.mobile.message}
           </p>
         )}
       </div>
 
-      <button
-        type="submit"
-        className="w-full bg-blue-600 text-white py-2 rounded"
-      >
-        Next
-      </button>
+      {/* Email */}
+      <div className="mb-4">
+        <label className="block mb-1 font-medium">
+          Email ID
+        </label>
+        <input
+          type="email"
+          {...register("email")}
+          className="w-full border p-2 rounded"
+          placeholder="example@email.com"
+        />
+        {errors.email && (
+          <p className="text-red-500 text-sm">
+            {errors.email.message}
+          </p>
+        )}
+      </div>
+
+      {/* Applicant Type */}
+      <div className="mb-6">
+        <label className="block mb-1 font-medium">
+          Type of Applicant
+        </label>
+        <select
+          {...register("applicantType")}
+          className="w-full border p-2 rounded"
+        >
+          <option value="">Select Applicant Type</option>
+          <option value="Salaried">Salaried</option>
+          <option value="SEP">Self-Employed Professional (SEP)</option>
+          <option value="SENP">Self-Employed Non-Professional (SENP)</option>
+          <option value="Others">Others</option>
+        </select>
+        {errors.applicantType && (
+          <p className="text-red-500 text-sm">
+            {errors.applicantType.message}
+          </p>
+        )}
+      </div>
+
+      {/* Navigation */}
+      <div className="flex justify-end">
+        <button
+          type="submit"
+          className="px-6 py-2 bg-blue-600 text-white rounded"
+        >
+          Next
+        </button>
+      </div>
     </form>
   );
 }
