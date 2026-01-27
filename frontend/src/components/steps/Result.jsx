@@ -7,39 +7,31 @@ export default function Result() {
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState(false);
+  const [result, setResult] = useState(null);
 
   useEffect(() => {
-    const submitData = async () => {
+    const submit = async () => {
       try {
-        setLoading(true);
-        setError("");
-
-        // 🔹 Backend API call
-        await submitLead(formData);
-
-        setSuccess(true);
+        const res = await submitLead(formData);
+        setResult(res.data);
       } catch (err) {
-        setError(
-          err?.response?.data?.message ||
-            "Something went wrong while submitting the form."
-        );
+        setError("Something went wrong while generating BI Rating.");
       } finally {
         setLoading(false);
       }
     };
 
-    submitData();
+    submit();
   }, [formData]);
 
   if (loading) {
     return (
       <div className="text-center py-10">
         <h2 className="text-xl font-semibold">
-          Submitting your details…
+          Generating your BI Rating…
         </h2>
         <p className="text-gray-600 mt-2">
-          Please wait while we generate your BI Rating.
+          Please wait a moment.
         </p>
       </div>
     );
@@ -49,55 +41,57 @@ export default function Result() {
     return (
       <div className="text-center py-10">
         <h2 className="text-xl font-semibold text-red-600">
-          Submission Failed
+          Unable to Generate BI Rating
         </h2>
-        <p className="text-gray-600 mt-2">
-          {error}
-        </p>
-
-        <button
-          onClick={() => window.location.reload()}
-          className="mt-6 px-4 py-2 bg-blue-600 text-white rounded"
-        >
-          Try Again
-        </button>
+        <p className="text-gray-600 mt-2">{error}</p>
       </div>
     );
   }
 
-  if (success) {
-    return (
-      <div className="text-center py-10">
-        <h2 className="text-2xl font-semibold text-green-700">
-          Thank You for Submitting Your Details
-        </h2>
+  const { biScore, riskBand } = result;
 
-        <p className="text-gray-700 mt-4">
-          Based on the information provided, your{" "}
-          <strong>BI (Borrower Intelligence) Rating</strong>{" "}
-          is being generated.
+  const riskColor =
+    riskBand === "Low Risk"
+      ? "text-green-600"
+      : riskBand === "Moderate Risk"
+      ? "text-yellow-600"
+      : "text-red-600";
+
+  return (
+    <div className="text-center py-10">
+      <h2 className="text-2xl font-semibold text-blue-700">
+        Your BI Rating Result
+      </h2>
+
+      <p className="mt-4 text-lg">
+        <strong>BI Score:</strong>{" "}
+        <span className="text-2xl font-bold">
+          {biScore} / 100
+        </span>
+      </p>
+
+      <p className={`mt-2 text-lg font-semibold ${riskColor}`}>
+        Risk Category: {riskBand}
+      </p>
+
+      <div className="mt-6 text-sm text-gray-600 max-w-md mx-auto">
+        <p>
+          This BI Rating is generated based on your credit,
+          banking behaviour, employment/business stability,
+          and financial strength.
         </p>
-
-        <p className="text-gray-700 mt-2">
-          The detailed BI Rating along with observations and
-          eligibility insights will be shared on your registered
-          email ID shortly.
+        <p className="mt-2">
+          Final loan eligibility depends on lender policies
+          and verification.
         </p>
-
-        <p className="text-sm text-gray-500 mt-4">
-          This assessment is indicative in nature and helps in
-          understanding bank-level credit readiness.
-        </p>
-
-        <button
-          onClick={resetForm}
-          className="mt-6 px-4 py-2 bg-gray-200 rounded"
-        >
-          Start New Assessment
-        </button>
       </div>
-    );
-  }
 
-  return null;
+      <button
+        onClick={resetForm}
+        className="mt-8 px-5 py-2 bg-gray-200 rounded"
+      >
+        Start New Assessment
+      </button>
+    </div>
+  );
 }

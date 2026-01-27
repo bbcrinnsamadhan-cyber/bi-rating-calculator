@@ -44,7 +44,7 @@ export default function Step3CreditBanking() {
           className="w-full border p-2 rounded"
         >
           <option value="">Select</option>
-          <option value="-1">Not Available / No Credit History</option>
+          <option value="-1">-1</option>
           {Array.from({ length: 61 }, (_, i) => 300 + i * 10).map(
             (score) => (
               <option key={score} value={score}>

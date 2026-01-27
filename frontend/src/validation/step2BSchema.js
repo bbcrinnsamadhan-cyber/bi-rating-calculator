@@ -2,40 +2,51 @@ import { z } from "zod";
 
 export const step2BSchema = z
   .object({
-    businessExperience: z
-      .number({
-        required_error: "Business experience is required",
-        invalid_type_error: "Enter a valid number",
+    // FIX: Preprocess use karein taaki empty string "" number mein convert ho sake
+    businessExperience: z.preprocess(
+      (val) => (val === "" || val === null ? undefined : Number(val)),
+      z.number({
+        invalid_type_error: "Enter business experience in years",
+        required_error: "Experience is required",
+      }).min(0, "Experience cannot be negative")
+    ),
+
+    gstRegistered: z.boolean({
+      required_error: "Please select GST registration status",
+    }),
+
+    // FIX: GST Vintage ke liye bhi Preprocess zaroori hai
+    gstVintage: z.preprocess(
+      (val) => (val === "" || val === null ? undefined : Number(val)),
+      z.number({
+        invalid_type_error: "GST vintage must be a number",
       })
-      .min(0, "Value cannot be negative"),
+      .min(0, "GST vintage cannot be negative")
+      .optional()
+    ),
 
-    gstRegistered: z
-      .string()
-      .min(1, "Please select GST registration status"),
+    turnoverTrend: z.enum(["Positive", "Flat", "Negative"], {
+      required_error: "Please select turnover trend",
+    }),
 
-    gstVintage: z
-      .number()
-      .min(0, "Value cannot be negative")
-      .optional(),
+    profitTrend: z.enum(["Positive", "Flat", "Negative"], {
+      required_error: "Please select profit trend",
+    }),
 
-    turnoverTrend: z
-      .string()
-      .min(1, "Please select turnover trend"),
-
-    profitTrend: z
-      .string()
-      .min(1, "Please select profit trend"),
-
-    capitalTrend: z
-      .string()
-      .min(1, "Please select capital trend"),
+    capitalTrend: z.enum(["Positive", "Stable", "Declining"], {
+      required_error: "Please select capital / net worth trend",
+    }),
   })
-  .superRefine((data, ctx) => {
-    if (data.gstRegistered === "Yes" && data.gstVintage == null) {
-      ctx.addIssue({
-        path: ["gstVintage"],
-        message: "GST vintage is required when GST is registered",
-        code: z.ZodIssueCode.custom,
-      });
+  .refine(
+    (data) => {
+      // Logic: Agar GST Registered hai, to Vintage undefined nahi hona chahiye
+      if (data.gstRegistered === true) {
+        return data.gstVintage !== undefined && data.gstVintage !== null;
+      }
+      return true;
+    },
+    {
+      message: "GST Vintage is required when GST is registered",
+      path: ["gstVintage"],
     }
-  });
+  );

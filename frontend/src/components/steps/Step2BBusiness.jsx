@@ -2,6 +2,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { step2BSchema } from "../../validation/step2BSchema";
 import { useFormStore } from "../../store/useFormStore";
+import RadioGroup from "../common/RadioGroup";
+import { useEffect } from "react";
 
 export default function Step2BBusiness() {
   const { saveData, nextStep, prevStep, formData } = useFormStore();
@@ -10,25 +12,36 @@ export default function Step2BBusiness() {
     register,
     handleSubmit,
     watch,
+    control,
+    setValue, 
+    clearErrors, 
     formState: { errors },
   } = useForm({
     resolver: zodResolver(step2BSchema),
     mode: "onBlur",
     defaultValues: {
-      businessExperience: formData.businessExperience,
-      gstRegistered: formData.gstRegistered,
-      gstVintage: formData.gstVintage,
-      turnoverTrend: formData.turnoverTrend,
-      profitTrend: formData.profitTrend,
-      capitalTrend: formData.capitalTrend,
+      businessExperience: formData.businessExperience ?? "", 
+      gstRegistered: formData.gstRegistered ?? undefined,
+      gstVintage: formData.gstVintage ?? "",
+      turnoverTrend: formData.turnoverTrend ?? "",
+      profitTrend: formData.profitTrend ?? "",
+      capitalTrend: formData.capitalTrend ?? "",
     },
   });
 
   const gstRegistered = watch("gstRegistered");
 
+  useEffect(() => {
+    if (gstRegistered === false) {
+      setValue("gstVintage", ""); 
+      clearErrors("gstVintage");  
+    }
+  }, [gstRegistered, setValue, clearErrors]);
+
   const onSubmit = (data) => {
+    console.log("STEP 2B SUBMIT DATA:", data);
     saveData(data);
-    nextStep(); // Step 3: Credit & Banking
+    nextStep();
   };
 
   return (
@@ -45,7 +58,9 @@ export default function Step2BBusiness() {
         <input
           type="number"
           min="0"
-          {...register("businessExperience", { valueAsNumber: true })}
+          {...register("businessExperience", {
+            valueAsNumber: true,
+          })}
           className="w-full border p-2 rounded"
           placeholder="e.g. 5"
         />
@@ -56,28 +71,16 @@ export default function Step2BBusiness() {
         )}
       </div>
 
-      {/* GST Registered */}
-      <div className="mb-4">
-        <label className="block mb-1 font-medium">
-          GST Registered?
-        </label>
-        <select
-          {...register("gstRegistered")}
-          className="w-full border p-2 rounded"
-        >
-          <option value="">Select</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-        {errors.gstRegistered && (
-          <p className="text-red-500 text-sm">
-            {errors.gstRegistered.message}
-          </p>
-        )}
-      </div>
+      {/* GST Registered – BOOLEAN via RadioGroup */}
+      <RadioGroup
+        label="GST Registered?"
+        name="gstRegistered"
+        control={control}
+        error={errors.gstRegistered}
+      />
 
-      {/* GST Vintage (Conditional) */}
-      {gstRegistered === "Yes" && (
+      {/* GST Vintage – only if GST = true */}
+      {gstRegistered === true && (
         <div className="mb-4">
           <label className="block mb-1 font-medium">
             GST Vintage (Years)
@@ -85,7 +88,9 @@ export default function Step2BBusiness() {
           <input
             type="number"
             min="0"
-            {...register("gstVintage", { valueAsNumber: true })}
+            {...register("gstVintage", {
+              valueAsNumber: true,
+            })}
             className="w-full border p-2 rounded"
             placeholder="e.g. 3"
           />

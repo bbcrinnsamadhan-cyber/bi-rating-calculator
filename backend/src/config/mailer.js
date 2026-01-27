@@ -34,7 +34,7 @@ export const sendUserMail = async (lead) => {
     // Financial Strength
     totalAssets,
     totalOutstandingLoans,
-    netWorthRatio,
+    netWorthBorrowingRatio,
 
     // BI Result
     biScore,
@@ -140,7 +140,7 @@ export const sendUserMail = async (lead) => {
     <ul>
       <li>Total Assets: ₹${totalAssets}</li>
       <li>Total Outstanding Loans: ₹${totalOutstandingLoans}</li>
-      <li>Net Worth to Borrowing Ratio: ${netWorthRatio}</li>
+      <li>Net Worth to Borrowing Ratio: ${netWorthBorrowingRatio}</li>
     </ul>
 
     <hr />
