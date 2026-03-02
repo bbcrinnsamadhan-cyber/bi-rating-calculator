@@ -88,9 +88,7 @@ export default function Result() {
         </button>
       </div>
 
-      <p className="mt-6 text-xs text-gray-400">
-        Reference ID: {Math.random().toString(36).substr(2, 9).toUpperCase()}
-      </p>
+      
     </div>
   );
 }
