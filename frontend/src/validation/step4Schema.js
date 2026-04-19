@@ -15,9 +15,5 @@ export const step4Schema = z.object({
     })
     .min(1, "Value must be greater than zero"),
 
-  declaration: z.literal(true, {
-    errorMap: () => ({
-      message: "Please confirm the declaration",
-    }),
-  }),
+
 });

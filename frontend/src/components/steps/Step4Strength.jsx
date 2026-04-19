@@ -111,21 +111,7 @@ export default function Step4Strength() {
         </p>
       </div>
 
-      {/* Declaration */}
-      <div className="mb-6">
-        <label className="flex items-start gap-2 text-sm">
-          <input type="checkbox" {...register("declaration")} />
-          <span>
-            I confirm that the information provided above is true to
-            the best of my knowledge.
-          </span>
-        </label>
-        {errors.declaration && (
-          <p className="text-red-500 text-sm mt-1">
-            {errors.declaration.message}
-          </p>
-        )}
-      </div>
+
 
       {/* Navigation */}
       <div className="flex justify-between">
@@ -139,9 +125,9 @@ export default function Step4Strength() {
 
         <button
           type="submit"
-          className="px-4 py-2 bg-blue-600 text-white rounded"
+          className="px-4 py-2 bg-blue-600 text-white rounded shadow hover:bg-blue-700 transition"
         >
-          Calculate My BI Rating
+          Proceed to Submission
         </button>
       </div>
     </form>

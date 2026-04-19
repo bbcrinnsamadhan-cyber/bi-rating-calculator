@@ -1,6 +1,6 @@
 import { useFormStore } from "../store/useFormStore";
 
-const steps = ["Profile", "Employment OR Business", "Credit & Banking", "Financial Strength", "Result"];
+const steps = ["Profile", "Employment OR Business", "Credit & Banking", "Financial Strength", "Submit"];
 
 export default function ProgressBar() {
   const { step } = useFormStore();
