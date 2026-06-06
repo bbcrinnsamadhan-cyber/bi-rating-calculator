@@ -14,4 +14,8 @@ app.use("/api", apiLimiter);
 
 app.use("/api/leads", leadRoutes);
 
+app.get("/", (req, res) => {
+  res.send("server is running, ready to accept requests!");
+});
+
 export default app;
